@@ -2,6 +2,9 @@ import datetime
 
 from django.db import models
 from django.utils import timezone
+from django.db.models import signals
+from django.dispatch import receiver 
+from django.db.models.signals import pre_save, post_save
 
 # Create your models here.
 class Question(models.Model):
@@ -25,3 +28,14 @@ class Choice(models.Model):
 
     def __str__(self):
         return self.choice_text
+
+# Pre-save signal.    
+def check_vote_pre(sender, instance, **kwargs):
+    print("Pre-save: Vote made")
+
+# Post-save signal
+def check_vote_post(sender, instance, **kwargs):
+    print("Post-save: Vote made")
+
+pre_save.connect(check_vote_pre, sender=Choice)
+post_save.connect(check_vote_post, sender=Choice)
